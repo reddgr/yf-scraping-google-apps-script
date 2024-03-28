@@ -1,4 +1,4 @@
-# Google Sheets Yahoo Finance Example Functions
+# Google Sheets UrlFetchApp Example Functions
 
 This repository contains a set of example functions for educational purposes, demonstrating how to use the Google Apps Script `UrlFetchApp` class to integrate financial metrics from Yahoo Finance into Google Sheets. These functions are intended to serve as illustrative examples, providing a basic framework for fetching real-time financial data for personal learning and exploration.
 
