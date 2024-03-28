@@ -37,5 +37,5 @@ These functions are provided as-is for educational purposes to demonstrate codin
 
 This README clarifies the intent and usage of the Google Sheets Yahoo Finance Example Functions, highlighting their educational purpose and guiding users on how to experiment with them for personal learning.
 
-This README was generated with JavaScript Code Streamliner (https://chat.openai.com/g/g-htqjs4zMj-javascript-code-streamliner).
+This README was generated with JavaScript Code Streamliner (https://chat.openai.com/g/g-cwBADUbq0-javascript-code-streamliner).
 
