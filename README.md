@@ -4,13 +4,13 @@ This repository contains a set of example functions for educational purposes, de
 
 ## Overview of Functions
 
-- **`Yfinance(ticker)`**: Demonstrates fetching the current stock price for a specified ticker.
-- **`YFmc(ticker)`**: Shows how to retrieve the market capitalization of a stock.
-- **`YFbeta(ticker)`**: Example of obtaining the beta coefficient to indicate stock volatility.
-- **`YFper(ticker)`**: Illustrates returning the Price to Earnings (P/E) ratio.
-- **`YFgrowth(ticker)`**: Provides an example of estimating the five-year growth rate.
+- **`getPrice(ticker)`**: Demonstrates fetching the current stock price for a specified ticker.
+- **`getMarketCap(ticker)`**: Shows how to retrieve the market capitalization of a stock.
+- **`getBeta(ticker)`**: Retrieves beta.
+- **`getPER(ticker)`**: Retrieves Price to Earnings (P/E) ratio.
+- **`YFgrowth(ticker)`**: Retrieves five-year growth rate.
 - **`getThirdFinColValue(ticker)`**: Extracts a specific value from a stock's balance sheet as an example.
-- **`extractGrossMargin(ticker)`**: Scrapes the gross margin percentage. (URL adjustment to Yahoo Finance is required.)
+- **`extractGrossMargin(ticker)`**: Scrapes the gross margin percentage.
 - **`duplicateSheet()`**: Example function to duplicate a specified sheet within the same spreadsheet, useful for data backup.
 
 These functions utilize the Google Apps Script `UrlFetchApp` class to make HTTP requests to Yahoo Finance's web pages and parse the returned HTML for specific financial data. They are designed to be copied into a Google Apps Script project linked to a Google Sheet for direct application and experimentation.
