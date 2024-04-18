@@ -1,49 +1,73 @@
 // RETURNS CURRENT STOCK PRICE:
-function Yfinance(ticker) {
-  const url = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}`;
+function getPrice(ticker) {
+  const url = `https://finance.yahoo.com/quote/${ticker}`;
   const res = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
   const contentText = res.getContentText();
-  const price = contentText.match(/<fin-streamer(?:.*?)active="">(\d+[,]?[\d\.]+?)<\/fin-streamer>/);
-  return price[1];
+  const regex = /<fin-streamer[^>]*?class="livePrice[^>]*?data-value="([\d\.]+)"[^>]*?active>/;
+  const priceMatch = contentText.match(regex);
+  if (priceMatch && priceMatch[1]) {
+    return priceMatch[1];  // Return the captured price
+  }
+  return 'NA';  // Return a default message if no price is captured
 }
 // TEST:
-console.log("AAPL current price: " + Yfinance("AAPL"))
+console.log("IBM current price: " + getPrice("IBM"))
 
-// RETURNS MARKET CAP:
-function YFmc(ticker) {
-  const url = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}`;
+// RETURNS CURRENT MARKET CAP:
+function getMarketCap(ticker) {
+  const url = `https://finance.yahoo.com/quote/${ticker}`;
   const res = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
   const contentText = res.getContentText();
-  const marketcap = contentText.match(/data-test="MARKET_CAP-value">(.*?)<\/td>/);
-  return marketcap[1];
+  // Regex to extract market cap from the data-value attribute of the <fin-streamer> with data-field="marketCap"
+  const regex = /<fin-streamer[^>]*data-field="marketCap"[^>]*>\s*([\d\.]+[MBT]?B?)\s*<\/fin-streamer>/;
+  const marketCapMatch = contentText.match(regex);
+  if (marketCapMatch && marketCapMatch[1]) {
+    return marketCapMatch[1];  // Return the captured market cap
+  }
+  return 'Market Cap not found';  // Return a default message if no market cap is captured
 }
-//console.log(YFmc("AAPL"))
-
-function YFbeta(ticker) {
-  const url = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}`;
-  const res = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
-  const contentText = res.getContentText();
-  const marketcap = contentText.match(/data-test="BETA_5Y-value">(.*?)<\/td>/);
-  return marketcap[1];
-}
-
 // TEST:
-console.log("GOOG current beta: " + YFbeta("GOOG"))
+console.log("AAPL Market Cap: " + getMarketCap("AAPL"));
 
-function YFper(ticker) {
-  const url = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}`;
+// RETURNS BETA (5y Monthly):
+function getBeta(ticker) {
+  const url = `https://finance.yahoo.com/quote/${ticker}`;
   const res = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
   const contentText = res.getContentText();
-  const peRatio = contentText.match(/data-test="PE_RATIO-value">(.*?)<\/td>/);
-  return peRatio[1];
+  const regex = /<span class="label svelte-tx3nkj">Beta \(5Y Monthly\)<\/span>\s*<span class="value svelte-tx3nkj">([^<]+)<\/span>/;
+  const marketCapMatch = contentText.match(regex);
+  if (marketCapMatch && marketCapMatch[1]) {
+    return marketCapMatch[1];  
+  }
+  return 'NA';  
 }
-console.log("TCTZF PE ratio: " + YFper("TCTZF"))
+// TEST:
+console.log("GOOG Beta: " + getBeta("GOOG"));
 
+
+// PE Ratio (TTM):
+function getPER(ticker) {
+  const url = `https://finance.yahoo.com/quote/${ticker}`;
+  const res = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
+  const contentText = res.getContentText();
+  const regex = /<span class="label svelte-tx3nkj">PE Ratio \(TTM\)<\/span>\s*<span class="value svelte-tx3nkj">\s*<fin-streamer[^>]*>\s*([\d\.]+)\s*<\/fin-streamer>\s*<\/span>/;
+  const marketCapMatch = contentText.match(regex);
+  if (marketCapMatch && marketCapMatch[1]) {
+    return marketCapMatch[1];  
+  }
+  return 'NA';  
+}
+// TEST:
+console.log("MSFT PER: " + getPER("MSFT"));
+
+
+
+// Pending fix after latest change in Yahoo Finance:
 function YFgrowth(ticker) {
   const url = `https://finance.yahoo.com/quote/${ticker}/analysis`;
   const res = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
   const contentText = res.getContentText();
-  const growth5yr = contentText.match(/Past 5 Years \(per annum\)<\/span><\/td><td class="Ta\(end\) Py\(10px\)">(-?\d+\.\d+%)/);
+  const growth5yr = contentText.match(/Past 5 Years \(per annum\)<\/span><\/td><td class="Ta\(end\) Py\(10px\)">(-?\d+\.\d+%)/); // Pending to fix
   return growth5yr ? growth5yr[1] : "NA";
 }
 console.log("IBM 5 yr growth: " + YFgrowth("IBM"))
@@ -53,7 +77,7 @@ function getThirdFinColValue(ticker) {
   const res = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
   const contentText = res.getContentText();  
   // Match all instances of the pattern, then select the third one
-  const pattern = /<div class="[^"]*" data-test="fin-col"><span>([\d,]+)<\/span><\/div>/g;
+  const pattern = /<div class="[^"]*" data-test="fin-col"><span>([\d,]+)<\/span><\/div>/g; // Pending to fix
   let match;
   let count = 0;
   let thirdValue = "Value not found";
