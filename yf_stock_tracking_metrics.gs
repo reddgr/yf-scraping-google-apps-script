@@ -1,18 +1,22 @@
-// RETURNS CURRENT STOCK PRICE:
-function getPrice(ticker) {
+// RETURNS LAST CLOSE PRICE:
+function getPreviousClose(ticker) {
   const url = `https://finance.yahoo.com/quote/${ticker}`;
-  const res = UrlFetchApp.fetch(url, {muteHttpExceptions: true});
+  const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
   const contentText = res.getContentText();
-  const regex = /<fin-streamer[^>]*?class="livePrice[^>]*?data-value="([\d\.]+)"[^>]*?active>/;
-  const priceMatch = contentText.match(regex);
-  if (priceMatch && priceMatch[1]) {
-    return priceMatch[1];  // Return the captured price
+  
+  // Regex to extract previous close value from the <fin-streamer> with data-field="regularMarketPreviousClose"
+  const regex = /<fin-streamer[^>]*data-field="regularMarketPreviousClose"[^>]*>\s*([\d\.]+)\s*<\/fin-streamer>/;
+  const match = contentText.match(regex);
+  
+  if (match && match[1]) {
+    return match[1]; // Return the captured previous close value
   }
-  return 'Price not found';  // Return a default message if no price is captured
+  return 'Previous Close not found'; // Return a default message if not found
 }
+
 // TEST:
 const test_ticker = "AAPL"
-console.log(`${test_ticker} current price: ${getPrice(test_ticker)}`);
+console.log(`${test_ticker} previous close: ${getPreviousClose(test_ticker)}`);
 
 // RETURNS CURRENT MARKET CAP:
 function getMarketCap(ticker) {
@@ -115,3 +119,10 @@ function duplicateSheet2() {
  newSheet.getRange(1, 1, sourceLastRow, sourceLastColumn)
      .setWraps(sourceSheet.getRange(1, 1, sourceLastRow, sourceLastColumn).getWraps());
 }
+
+
+
+
+
+
+
