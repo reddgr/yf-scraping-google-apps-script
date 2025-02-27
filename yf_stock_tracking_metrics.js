@@ -39,32 +39,36 @@ function getBeta(ticker) {
   const url = `https://finance.yahoo.com/quote/${ticker}`;
   const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
   const contentText = res.getContentText();
-  // Regex to extract Beta (5Y Monthly) from the <span> with class "value yf-11uk5vd" and sibling "label yf-11uk5vd"
-  const regex = /<span class="label yf-11uk5vd" title="Beta \(5Y Monthly\)">Beta \(5Y Monthly\)<\/span>\s*<span class="value yf-11uk5vd">([\d\.]+)<\/span>/;
-  const betaMatch = contentText.match(regex);
-  if (betaMatch && betaMatch[1]) {
-    return betaMatch[1];  // Return the captured Beta value
+  
+  // Regex to locate "Beta (5Y Monthly)" and extract the following number
+  const regex = /<span[^>]*title="Beta \(5Y Monthly\)"[^>]*>.*?<\/span>\s*<span[^>]*class="value[^"]*"[^>]*>\s*([\d\.]+)\s*<\/span>/;
+  const match = contentText.match(regex);
+  
+  if (match && match[1]) {
+    return match[1]; // Return the captured Beta value
   }
-  return 'Beta not found';  // Return a default message if no Beta is captured
+  return 'Beta (5Y Monthly) not found'; // Default message if not found
 }
 // TEST:
-console.log(`${test_ticker} beta: ${getBeta(test_ticker)}`);
+console.log(`AAPL Beta (5Y Monthly): ${getBeta("AAPL")}`);
 
-// PE Ratio (TTM):
 function getPER(ticker) {
   const url = `https://finance.yahoo.com/quote/${ticker}`;
   const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
   const contentText = res.getContentText();
-  // Updated regex to match PE Ratio (TTM) structure
-  const regex = /<span class="label yf-11uk5vd" title="PE Ratio \(TTM\)">PE Ratio \(TTM\)<\/span>\s*<span class="value yf-11uk5vd">\s*<fin-streamer[^>]*data-field="trailingPE"[^>]*>\s*([\d\.]+)\s*<\/fin-streamer>\s*<\/span>/;
-  const perMatch = contentText.match(regex);
-  if (perMatch && perMatch[1]) {
-    return perMatch[1];  // Return the captured PE Ratio value
+  
+  // Updated regex to extract the PE Ratio (TTM) value from the fin-streamer tag
+  const regex = /<span[^>]*title="PE Ratio \(TTM\)"[^>]*>.*?<\/span>\s*<span[^>]*class="value[^"]*"[^>]*>\s*<fin-streamer[^>]*data-value="([\d\.]+)"/;
+  const match = contentText.match(regex);
+  
+  if (match && match[1]) {
+    return match[1]; // Return the extracted PE Ratio value
   }
-  return 'PE Ratio not found';  // Return a default message if no PE Ratio is captured
+  return 'PE Ratio (TTM) not found'; // Default message if not found
 }
+
 // TEST:
-console.log(`${test_ticker} Price to Earnings ratio: ${getPER(test_ticker)}`);
+console.log(`AAPL PE Ratio (TTM): ${getPER("AAPL")}`);
 
 function getPEG(ticker) {
   const url = `https://finance.yahoo.com/quote/${ticker}/key-statistics`;
@@ -119,3 +123,10 @@ function duplicateSheet2() {
  newSheet.getRange(1, 1, sourceLastRow, sourceLastColumn)
      .setWraps(sourceSheet.getRange(1, 1, sourceLastRow, sourceLastColumn).getWraps());
 }
+
+
+
+
+
+
+
